@@ -9,6 +9,14 @@ import { API_KEY, URL } from "./data/Api";
 
 class App extends React.Component {
 
+    state = {
+        temperature: 0,
+        city: '',
+        country: '',
+        humidity: 0,
+        description: '',
+    }
+
     getWeather = (e) => {
         e.preventDefault();
         let city = e.target.elements.city.value;
