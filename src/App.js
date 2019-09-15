@@ -8,38 +8,49 @@ import Weather from "./components/Weather";
 import { API_KEY, URL } from "./data/Api";
 
 class App extends React.Component {
+  state = {
+    temperature: 0,
+    city: "",
+    country: "",
+    humidity: 0,
+    description: "",
+    error: ""
+  };
 
-    state = {
-        temperature: 0,
-        city: '',
-        country: '',
-        humidity: 0,
-        description: '',
-    }
+  getWeather = e => {
+    e.preventDefault();
+    let city = e.target.elements.city.value;
+    let country = e.target.elements.country.value;
+    fetch(`${URL}?q=${city},${country}&appid=${API_KEY}`)
+      .then(response => {
+        return response.json();
+      })
+      .then(myJson => {
+        this.setState({
+          temperature: myJson.main.temp,
+          city: myJson.name,
+          country: myJson.sys.country,
+          humidity: myJson.main.humidity,
+          description: myJson.weather[0].description
+        });
+      });
+  };
 
-    getWeather = (e) => {
-        e.preventDefault();
-        let city = e.target.elements.city.value;
-        let country = e.target.elements.country.value;
-        fetch(`${URL}?q=${city},${country}&appid=${API_KEY}`)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(myJson) {
-                console.log(JSON.stringify(myJson));
-            });
-
-    };
-
-    render() {
-        return ( 
-            <div className ="App">
-                <Title/>
-                <Form getWeather={this.getWeather}/>
-                <Weather/>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className="App">
+        <Title />
+        <Form getWeather={this.getWeather} />
+        <Weather
+          temperature={this.state.temperature}
+          city={this.state.city}
+          country={this.state.country}
+          humidity={this.state.humidity}
+          description={this.state.description}
+        />
+      </div>
+    );
+  }
 }
 
 export default App;
